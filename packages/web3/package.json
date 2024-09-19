@@ -1,0 +1,49 @@
+{
+  "name": "web3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "sollint:solidity": "solhint -f table contracts/**/*.sol",
+    "prettier:solidity": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
+    "lint": "eslint --fix",
+    "format": "prettier --write \"ignition/**/*.ts\"",
+    "prepare": "cd .. && cd .. && husky install ./packages/web3/.husky"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "ignition/**/*.{js,ts,tsx}": [
+      "npm run lint",
+      "npm run format"
+    ],
+    "contracts/**/*.sol": [
+      "npm run prettier:solidity",
+      "npm run sollint:solidity"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "hardhat": "^2.22.9",
+    "husky": "^8.0.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-solidity": "^1.4.1",
+    "solhint": "^5.0.3",
+    "solhint-plugin-prettier": "^0.1.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@tatumio/tatum": "^4.2.40",
+    "dotenv": "^16.4.5"
+  }
+}
