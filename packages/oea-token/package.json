@@ -8,7 +8,7 @@
     "dev": "npm run db:migrate && npm run db:generate && nodemon -q",
     "lint": "eslint --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "cd .. && cd .. && husky install ./packages/nftickets/.husky",
+    "prepare": "cd .. && cd .. && husky install ./packages/oea-token/.husky",
     "db:migrate": "prisma migrate deploy",
     "db:make-migrations": "prisma migrate dev",
     "db:generate": "prisma generate"

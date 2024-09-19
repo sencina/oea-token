@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd packages/nftickets && npx lint-staged --allow-empty
+cd packages/oea-token && npx lint-staged --allow-empty
