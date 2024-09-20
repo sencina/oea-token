@@ -3,6 +3,7 @@ import { NFT_ABI } from '../utils/abi';
 import { Deployer as IDeployer } from './deployer';
 import { NotFoundException } from '@utils/errors';
 import { BUCKET_URL } from '@modules/image/utils/constants';
+import { log } from 'console';
 
 export class Deployer implements IDeployer {
   private contract: Contract;
@@ -16,16 +17,20 @@ export class Deployer implements IDeployer {
   async deploy(metadataHash: string, to: string): Promise<string> {
     const tx = await this.contract.mint(to, BUCKET_URL(metadataHash));
     const receipt = await tx.wait();
-    const event = receipt.logs
+    const event = this.getEventArgs(receipt.logs, 'NFTCreated');
+    return event.tokenId.toString();
+  }
+
+  getEventArgs(logs, eventName) {
+    const event = logs
       .map((log: { topics: ReadonlyArray<string>; data: string }) => {
         return this.contract.interface.parseLog(log);
       })
-      .find((parsedLog: { name: string }) => parsedLog && parsedLog.name === 'NFTCreated');
+      .find((parsedLog: { name: string }) => parsedLog && parsedLog.name === eventName);
     if (event) {
-      const tokenId = event.args?.tokenId;
-      return tokenId.toString();
+      return event.args;
     } else {
-      throw new NotFoundException('Event not found');
+      throw new NotFoundException(`Event ${eventName}`);
     }
   }
 }
