@@ -259,6 +259,11 @@ export const NFT_ABI = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
+      {
         internalType: 'uint256',
         name: 'tokenId',
         type: 'uint256',
@@ -297,6 +302,19 @@ export const NFT_ABI = [
   {
     inputs: [],
     name: 'counter',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'currentId',
     outputs: [
       {
         internalType: 'uint256',

@@ -3,7 +3,6 @@ import { NFT_ABI } from '../utils/abi';
 import { Deployer as IDeployer } from './deployer';
 import { NotFoundException } from '@utils/errors';
 import { BUCKET_URL } from '@modules/image/utils/constants';
-import { log } from 'console';
 
 export class Deployer implements IDeployer {
   private contract: Contract;
@@ -21,7 +20,19 @@ export class Deployer implements IDeployer {
     return event.tokenId.toString();
   }
 
-  getEventArgs(logs, eventName) {
+  async authenticate(address: string, tokenId: string): Promise<boolean> {
+    try {
+      return (await this.contract.ownerOf(tokenId)) === address;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async getCurrentId(): Promise<string> {
+    return (await this.contract.currentId()).toString();
+  }
+
+  private getEventArgs(logs, eventName) {
     const event = logs
       .map((log: { topics: ReadonlyArray<string>; data: string }) => {
         return this.contract.interface.parseLog(log);
