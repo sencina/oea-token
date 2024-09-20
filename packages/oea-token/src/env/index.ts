@@ -8,3 +8,4 @@ export const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY;
 export const DEPLOYER_ADDRESS = process.env.DEPLOYER_ADDRESS;
 export const PROVIDER_URL = process.env.PROVIDER_URL;
 export const NETWORK_NAME = process.env.NETWORK_NAME;
+export const NFT_ADDRESS = process.env.NFT_ADDRESS;

@@ -1,5 +1,5 @@
 import { Contract, Signer } from 'ethers';
-import { deployerAbi } from '../utils/abi';
+import { NFT_ABI } from '../utils/abi';
 import { Deployer as IDeployer } from './deployer';
 import { NotFoundException } from '@utils/errors';
 import { BUCKET_URL } from '@modules/image/utils/constants';
@@ -10,23 +10,24 @@ export class Deployer implements IDeployer {
 
   constructor(address: string, signer: Signer) {
     this.signer = signer;
-    this.contract = new Contract(address, deployerAbi, this.signer);
+    this.contract = new Contract(address, NFT_ABI, this.signer);
   }
 
   async deploy(metadataHash: string) {
-    const tx = await this.contract.deploy(BUCKET_URL(metadataHash));
+    const tx = await this.contract.mint('0x9bfcd93Cf0490F82427a4bFD911002438C728D19', BUCKET_URL(metadataHash));
     const receipt = await tx.wait();
     const event = receipt.logs
       .map((log: { topics: ReadonlyArray<string>; data: string }) => {
         return this.contract.interface.parseLog(log);
       })
-      .find((parsedLog: { name: string }) => parsedLog && parsedLog.name === 'ContractDeployed');
-
+      .find((parsedLog: { name: string }) => parsedLog && parsedLog.name === 'NFTCreated');
+    console.log(receipt.logs);
+    console.log(event);
     if (event) {
-      const deployedAddress = event.args?.contractAddress;
+      const deployedAddress = event.args?.tokenId;
       return deployedAddress;
     } else {
-      throw new NotFoundException('Address not found');
+      throw new NotFoundException('Event not found');
     }
   }
 }

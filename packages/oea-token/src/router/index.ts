@@ -1,6 +1,6 @@
-import { eventRouter } from '@modules/event/controller/event.controller';
+import { projectRouter } from '@modules/project/controller/project.controller';
 import { Router } from 'express';
 
 export const router = Router();
 
-router.use('/event', eventRouter);
+router.use('/event', projectRouter);
