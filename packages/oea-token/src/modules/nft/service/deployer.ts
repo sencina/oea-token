@@ -1,3 +1,3 @@
 export interface Deployer {
-  deploy(hash: string): Promise<string>;
+  deploy(hash: string, address: string): Promise<string>;
 }
