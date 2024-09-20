@@ -29,7 +29,11 @@ contract OEANFTs is ERC721URIStorage {
         _setTokenURI(tokenId, _tokenURI);
     }
 
-    function authenticate(uint256 tokenId) public view returns (bool) {
-        return owners[msg.sender] == tokenId;
+    function authenticate(address sender, uint tokenId) public view returns (bool) {
+        return owners[sender] == tokenId;
+    }
+
+    function currentId() public view returns (uint) {
+        return counter;
     }
 }
