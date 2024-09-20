@@ -12,3 +12,16 @@ export class CreateProjectDto {
     this.address = address;
   }
 }
+
+export class TokenDTO {
+  @IsString()
+  tokenId: string;
+
+  @IsString()
+  address: string;
+
+  constructor(tokenId: string, address: string) {
+    this.tokenId = tokenId;
+    this.address = address;
+  }
+}

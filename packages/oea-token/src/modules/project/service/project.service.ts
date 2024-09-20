@@ -4,7 +4,7 @@ import { uplaodMetadata } from '@modules/image/ipfs';
 import { Deployer } from '@modules/nft/service/deployer.impl';
 import { PROVIDER } from '@modules/nft/utils/provider';
 import { Wallet } from 'ethers';
-import { CreateProjectDto } from '../dto';
+import { CreateProjectDto, TokenDTO } from '../dto';
 
 export class ProjectService {
   deployer = new Deployer(NFT_ADDRESS!, new Wallet(WALLET_PRIVATE_KEY!, PROVIDER));
@@ -20,6 +20,6 @@ export class ProjectService {
 
     const tokenId = await this.deployer.deploy(imageMetadata, project.address);
 
-    return tokenId;
+    return new TokenDTO(tokenId, NFT_ADDRESS!);
   }
 }
