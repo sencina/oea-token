@@ -3,6 +3,7 @@ import { generateImage } from '@modules/image/image.generator';
 import { uplaodMetadata } from '@modules/image/ipfs';
 import { Deployer } from '@modules/nft/service/deployer.impl';
 import { PROVIDER } from '@modules/nft/utils/provider';
+import { NotFoundException } from '@utils';
 import { Wallet } from 'ethers';
 
 export class ProjectService {
