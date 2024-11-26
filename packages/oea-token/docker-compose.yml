@@ -1,20 +1,15 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
-    image: postgres:15
-    container_name: oeatoken_db
-    env_file:
-      - .env
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
+      - "8080:8080" # Adjust the ports as needed for your application
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - nftickets_network
-
-volumes:
-  postgres_data:
-
-networks:
-  nftickets_network:
+      - .:/app
+      - /app/node_modules # Avoid conflicts with local `node_modules`
+    environment:
+      - NODE_ENV=development # Add any environment variables needed
+    command: npm start
