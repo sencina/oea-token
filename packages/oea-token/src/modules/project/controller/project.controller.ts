@@ -65,11 +65,11 @@ projectRouter.get('/:address/:tokenId', async (req, res) => {
           <h1>${isAuthenticated ? 'Verification Successful' : 'Verification Failed'}</h1>
           <p>Address: <span>${address}</span></p>
           <p>Token ID: <span class="token-id">${tokenId}</span></p>
-          <p class="status">${isAuthenticated ? 'The address is authenticated!' : 'Authentication failed.'}</p>
+          <p class="status">${isAuthenticated ? 'The address is verified!' : 'Verification failed.'}</p>
         </div>
       </body>
     </html>
   `;
 
-  res.status(200).send(htmlResponse);
+  res.status(isAuthenticated ? 200 : 403).send(htmlResponse);
 });
