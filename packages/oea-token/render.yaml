@@ -1,0 +1,14 @@
+envGroups:
+  - name: my-env-group
+
+services:
+  - type: web
+    name: service1
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envGroup: my-env-group
+  - type: web
+    name: service2
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envGroup: my-env-group
