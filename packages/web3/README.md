@@ -44,11 +44,11 @@ graph TD
         P -- "delegates to" --> I
     end
     
-    style U fill:#f9f,stroke:#333,stroke-width:2px
-    style P fill:#bbf,stroke:#333,stroke-width:2px
-    style I fill:#bfb,stroke:#333,stroke-width:2px
-    style I2 fill:#bfb,stroke:#333,stroke-width:2px
-    style PA fill:#fbb,stroke:#333,stroke-width:2px
+    style U fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style P fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style I fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style I2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style PA fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
 ```
 
 ### How It Works
