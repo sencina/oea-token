@@ -7,7 +7,7 @@ import { Wallet } from 'ethers';
 import { CreateProjectDto, TokenDTO } from '../dto';
 
 export class ProjectService {
-  deployer = new Deployer(NFT_ADDRESS!, new Wallet(WALLET_PRIVATE_KEY!, PROVIDER));
+  deployer = new Deployer(new Wallet(WALLET_PRIVATE_KEY!, PROVIDER));
 
   async create(project: CreateProjectDto, host: string, protocol: string) {
     const currentId = await this.deployer.getCurrentId();

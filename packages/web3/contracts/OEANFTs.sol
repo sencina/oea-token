@@ -1,39 +1,83 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract OEANFTs is ERC721URIStorage {
-    address public owner;
-    mapping (address => uint) owners;
-    uint256 public counter;
+contract OEANFTs is
+    Initializable,
+    ERC721Upgradeable,
+    ERC721URIStorageUpgradeable,
+    OwnableUpgradeable
+{
+    mapping(address => uint) private _owners;
+    uint256 private _counter;
 
     event NFTCreated(uint256 indexed tokenId);
 
-    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {
-        owner = msg.sender;
-        counter = 0;
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
     }
 
-    function mint(address to, string memory _tokenURI) public {
-        require(msg.sender == owner, "Only owner can mint");
-        _safeMint(to, counter);
-        _setTokenURI(counter, _tokenURI);
-        owners[to] = counter;
-        emit NFTCreated(counter);
-        counter++;
+    function initialize(
+        string memory name_,
+        string memory symbol_
+    ) public initializer {
+        __ERC721_init(name_, symbol_);
+        __ERC721URIStorage_init();
+        __Ownable_init(msg.sender);
+        _counter = 0;
     }
 
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
-        require(msg.sender == owner, "Only owner can set token URI");
-        _setTokenURI(tokenId, _tokenURI);
+    function mint(address to, string memory tokenURI_) public onlyOwner {
+        _safeMint(to, _counter);
+        _setTokenURI(_counter, tokenURI_);
+        _owners[to] = _counter;
+        emit NFTCreated(_counter);
+        _counter++;
     }
 
-    function authenticate(address sender, uint tokenId) public view returns (bool) {
-        return owners[sender] == tokenId;
+    function setTokenURI(
+        uint256 tokenId,
+        string memory tokenURI_
+    ) public onlyOwner {
+        _setTokenURI(tokenId, tokenURI_);
     }
 
-    function currentId() public view returns (uint) {
-        return counter;
+    function authenticate(
+        address account,
+        uint256 tokenId
+    ) public view returns (bool) {
+        return _owners[account] == tokenId;
+    }
+
+    function currentId() public view returns (uint256) {
+        return _counter;
+    }
+
+    // The following functions are overrides required by Solidity
+    function tokenURI(
+        uint256 tokenId
+    )
+        public
+        view
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }

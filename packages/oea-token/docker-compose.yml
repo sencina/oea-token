@@ -9,7 +9,10 @@ services:
       - "8080:8080" # Adjust the ports as needed for your application
     volumes:
       - .:/app
-      - /app/node_modules # Avoid conflicts with local `node_modules`
+      - ../web3:/app/web3
+      - /app/node_modules # Avoid conflicts with local `
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=development # Add any environment variables needed
+      - NODE_ENV=development
     command: npm start

@@ -1,0 +1,8 @@
+{
+  "network": {
+    "implementation": "0x88dc216B012962F75968BCda3Ae7132D294a704b",
+    "proxyAdmin": "0x24d96F4c8fe54EAB5Dc9f06d1f82b477E97b873D",
+    "proxy": "0xAb2fe3afEe0753BD5414d8BA3F46cb023F86B15F",
+    "network": "network"
+  }
+}
