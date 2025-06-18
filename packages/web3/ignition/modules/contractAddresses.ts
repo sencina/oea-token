@@ -2,36 +2,46 @@ import fs from 'fs';
 import path from 'path';
 
 interface ContractAddresses {
-  proxy: string;
-  proxyAdmin: string;
   implementation: string;
+  proxyAdmin: string;
+  proxy: string;
   network: string;
+}
+
+interface AddressesFile {
+  [network: string]: ContractAddresses;
 }
 
 const ADDRESSES_FILE = path.join(__dirname, '../contract-addresses.json');
 
-export function saveAddresses(addresses: ContractAddresses): void {
-  let allAddresses: Record<string, ContractAddresses> = {};
-
-  // Load existing addresses if file exists
-  if (fs.existsSync(ADDRESSES_FILE)) {
-    const content = fs.readFileSync(ADDRESSES_FILE, 'utf8');
-    allAddresses = JSON.parse(content);
-  }
-
-  // Update addresses for the network
-  allAddresses[addresses.network] = addresses;
-
-  // Save back to file
-  fs.writeFileSync(ADDRESSES_FILE, JSON.stringify(allAddresses, null, 2));
-}
-
 export function getAddresses(network: string): ContractAddresses | null {
-  if (!fs.existsSync(ADDRESSES_FILE)) {
+  try {
+    if (!fs.existsSync(ADDRESSES_FILE)) {
+      return null;
+    }
+    const addresses: AddressesFile = JSON.parse(fs.readFileSync(ADDRESSES_FILE, 'utf8'));
+    return addresses[network] || null;
+  } catch (error) {
+    console.error('Error reading addresses:', error);
     return null;
   }
+}
 
-  const content = fs.readFileSync(ADDRESSES_FILE, 'utf8');
-  const allAddresses: Record<string, ContractAddresses> = JSON.parse(content);
-  return allAddresses[network] || null;
+export function saveAddresses(addresses: ContractAddresses, network: string): void {
+  try {
+    let allAddresses: AddressesFile = {};
+    if (fs.existsSync(ADDRESSES_FILE)) {
+      allAddresses = JSON.parse(fs.readFileSync(ADDRESSES_FILE, 'utf8'));
+    }
+
+    allAddresses[network] = {
+      ...addresses,
+      network,
+    };
+
+    fs.writeFileSync(ADDRESSES_FILE, JSON.stringify(allAddresses, null, 2));
+  } catch (error) {
+    console.error('Error saving addresses:', error);
+    throw error;
+  }
 }

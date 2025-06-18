@@ -6,12 +6,14 @@ async function main() {
   console.log('Upgrading contract with the account:', deployer.address);
 
   // Get the network
-  const network = (await ethers.provider.getNetwork()).name;
+  const network = await ethers.provider.getNetwork();
+  const networkName = network.name === 'unknown' ? 'amoy' : network.name;
+  console.log('Network:', networkName, '(chainId:', network.chainId, ')');
 
   // Get existing addresses
-  const addresses = getAddresses(network);
+  const addresses = getAddresses(networkName);
   if (!addresses) {
-    throw new Error(`No deployment found for network ${network}. Please deploy the contracts first.`);
+    throw new Error(`No deployment found for network ${networkName}. Please deploy the contracts first.`);
   }
 
   // Deploy new implementation
@@ -34,10 +36,13 @@ async function main() {
   console.log('Proxy upgraded to new implementation');
 
   // Save the new implementation address
-  saveAddresses({
-    ...addresses,
-    implementation: await newImplementation.getAddress(),
-  });
+  saveAddresses(
+    {
+      ...addresses,
+      implementation: await newImplementation.getAddress(),
+    },
+    networkName
+  );
 
   // Verify the upgrade
   const upgradedContract = OEANFTs.attach(addresses.proxy);
@@ -48,6 +53,8 @@ async function main() {
 
   console.log('\nUpgrade Summary:');
   console.log('---------------');
+  console.log('Network:', networkName);
+  console.log('Chain ID:', network.chainId);
   console.log('New Implementation:', await newImplementation.getAddress());
   console.log('Proxy Admin:', addresses.proxyAdmin);
   console.log('Proxy:', addresses.proxy);

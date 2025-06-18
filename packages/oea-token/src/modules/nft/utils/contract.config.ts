@@ -1,6 +1,4 @@
-import { NETWORK_NAME, NFT_ADDRESS } from '@env';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { NETWORK_NAME, NFT_ADDRESS, NFT_ADMIN_ADDRESS, NFT_IMPLEMENTATION_ADDRESS } from '@env';
 import { ContractAddressNotFoundError, ContractConfigurationError } from './errors';
 import { Logger } from '@utils/logger';
 
@@ -22,68 +20,6 @@ interface ContractAddresses {
 }
 
 /**
- * Interface representing contract addresses for multiple networks
- * @interface NetworkAddresses
- */
-interface NetworkAddresses {
-  [network: string]: ContractAddresses;
-}
-
-/**
- * Path to the contract addresses file
- * Tries multiple possible locations to support both Docker and local environments
- * @constant
- */
-function getContractAddressesPath(): string {
-  const possiblePaths = [
-    // Docker path
-    join('/app/web3/ignition/contract-addresses.json'),
-    // Local development path
-    join(__dirname, '../../../../../../../packages/web3/ignition/contract-addresses.json'),
-  ];
-
-  for (const path of possiblePaths) {
-    try {
-      readFileSync(path, 'utf8');
-      return path;
-    } catch (error) {
-      logger.debug('Contract addresses file not found at path', { path });
-    }
-  }
-
-  return possiblePaths[0]; // Default to Docker path
-}
-
-const CONTRACT_ADDRESSES_PATH = getContractAddressesPath();
-
-/**
- * Reads and parses the contract addresses from the deployment file
- * @throws {ContractConfigurationError} If the file cannot be read or parsed
- * @returns {NetworkAddresses} The contract addresses for all networks
- */
-function getContractAddresses(): NetworkAddresses {
-  try {
-    logger.debug('Reading contract addresses', { path: CONTRACT_ADDRESSES_PATH });
-    const addresses = JSON.parse(readFileSync(CONTRACT_ADDRESSES_PATH, 'utf8'));
-    logger.debug('Contract addresses loaded successfully', { networks: Object.keys(addresses) });
-    return addresses;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      logger.error('Contract addresses file not found', error as Error, { path: CONTRACT_ADDRESSES_PATH });
-      throw new ContractConfigurationError(
-        'Contract addresses file not found. Please deploy the contracts first.',
-        error
-      );
-    }
-    logger.error('Failed to read contract addresses', error as Error, { path: CONTRACT_ADDRESSES_PATH });
-    throw new ContractConfigurationError(
-      'Failed to read contract addresses configuration',
-      error
-    );
-  }
-}
-
-/**
  * Gets the proxy contract address from environment variables
  * @throws {ContractConfigurationError} If the NFT_ADDRESS is not configured
  * @returns {string} The proxy contract address
@@ -94,7 +30,7 @@ export function getProxyAddress(): string {
 
     if (!NFT_ADDRESS) {
       logger.error('NFT address is not configured in environment');
-      throw new ContractConfigurationError('NFT address is not configured in environment');
+      throw new ContractConfigurationError('NFT_ADDRESS is not configured in environment');
     }
 
     logger.info('Proxy address retrieved successfully', { 
@@ -109,33 +45,38 @@ export function getProxyAddress(): string {
 }
 
 /**
- * Gets all contract addresses for the current network
- * @throws {ContractAddressNotFoundError} If no addresses are found for the current network
+ * Gets all contract addresses for the current network from environment variables
+ * @throws {ContractAddressNotFoundError} If required environment variables are not set
  * @throws {ContractConfigurationError} If there's an error reading the configuration
  * @returns {ContractAddresses} The contract addresses for the current network
  */
 export function getCurrentNetworkAddresses(): ContractAddresses {
-  const addresses = getContractAddresses();
-  const network = NETWORK_NAME;
+  logger.debug('Getting network addresses from environment');
 
-  logger.debug('Getting network addresses', { network });
-
-  if (!network) {
+  if (!NETWORK_NAME) {
     logger.error('Network name is not configured');
-    throw new ContractConfigurationError('Network name is not configured');
+    throw new ContractConfigurationError('NETWORK_NAME is not configured in environment');
   }
 
-  const networkAddresses = addresses[network];
-  
-  if (!networkAddresses) {
-    logger.error('Network addresses not found', undefined, { network });
-    throw new ContractAddressNotFoundError(network);
+  if (!NFT_ADDRESS || !NFT_ADMIN_ADDRESS || !NFT_IMPLEMENTATION_ADDRESS) {
+    logger.error('Required contract addresses not found in environment');
+    throw new ContractAddressNotFoundError(
+      'One or more required contract addresses are not configured in environment. ' +
+      'Required: NFT_ADDRESS, NFT_ADMIN_ADDRESS, NFT_IMPLEMENTATION_ADDRESS'
+    );
   }
+
+  const addresses: ContractAddresses = {
+    proxy: NFT_ADDRESS,
+    proxyAdmin: NFT_ADMIN_ADDRESS,
+    implementation: NFT_IMPLEMENTATION_ADDRESS,
+    network: NETWORK_NAME
+  };
 
   logger.info('Network addresses retrieved successfully', { 
-    network,
-    addresses: networkAddresses
+    network: NETWORK_NAME,
+    addresses
   });
 
-  return networkAddresses;
+  return addresses;
 } 
