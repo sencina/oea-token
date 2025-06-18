@@ -1,18 +1,18 @@
 import { ContractTransactionError } from '../utils/errors';
 
 /**
- * Interface for the NFT deployment service
+ * Interface for the NFT service
  * This service handles the interaction with the upgradeable NFT contract
  */
-export interface Deployer {
+export interface NFTService {
   /**
-   * Deploys a new NFT with the given metadata
+   * Mints a new NFT with the given metadata
    * @param hash - The IPFS hash of the NFT metadata
    * @param address - The address that will receive the NFT
    * @returns The ID of the newly minted token
    * @throws {ContractTransactionError} If the minting transaction fails
    */
-  deploy(hash: string, address: string): Promise<string>;
+  mint(hash: string, address: string): Promise<string>;
 
   /**
    * Authenticates whether an address owns a specific token
