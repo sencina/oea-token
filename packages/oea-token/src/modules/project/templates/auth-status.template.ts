@@ -1,10 +1,3 @@
-// Note: The following assets need to be added to the project:
-// - /assets/logos/haps-logo.svg
-// - /assets/logos/oea-logo.svg
-// - /assets/logos/bid-logo.svg
-// - /assets/logos/ricg-logo.svg
-// - /assets/logos/idrc-logo.svg
-
 export interface AuthStatusTemplateProps {
   isAuthenticated: boolean;
   address: string;
