@@ -12,12 +12,7 @@ export class ProjectService {
 
   async create(project: CreateProjectDto, host: string, protocol: string) {
     const currentId = await this.nftService.getCurrentId();
-    const image = await generateImage(
-      project.name,
-      'Type',
-      '1',
-      this.getUrl(host, protocol, project.address, currentId)
-    );
+    const image = await generateImage(project.name, currentId, this.getUrl(host, protocol, project.address, currentId));
 
     const imageMetadata = await uplaodMetadata(
       {
