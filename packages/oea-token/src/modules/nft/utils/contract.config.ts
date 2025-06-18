@@ -33,8 +33,8 @@ export function getProxyAddress(): string {
       throw new ContractConfigurationError('NFT_ADDRESS is not configured in environment');
     }
 
-    logger.info('Proxy address retrieved successfully', { 
-      address: NFT_ADDRESS 
+    logger.info('Proxy address retrieved successfully', {
+      address: NFT_ADDRESS,
     });
 
     return NFT_ADDRESS;
@@ -62,7 +62,7 @@ export function getCurrentNetworkAddresses(): ContractAddresses {
     logger.error('Required contract addresses not found in environment');
     throw new ContractAddressNotFoundError(
       'One or more required contract addresses are not configured in environment. ' +
-      'Required: NFT_ADDRESS, NFT_ADMIN_ADDRESS, NFT_IMPLEMENTATION_ADDRESS'
+        'Required: NFT_ADDRESS, NFT_ADMIN_ADDRESS, NFT_IMPLEMENTATION_ADDRESS'
     );
   }
 
@@ -70,13 +70,13 @@ export function getCurrentNetworkAddresses(): ContractAddresses {
     proxy: NFT_ADDRESS,
     proxyAdmin: NFT_ADMIN_ADDRESS,
     implementation: NFT_IMPLEMENTATION_ADDRESS,
-    network: NETWORK_NAME
+    network: NETWORK_NAME,
   };
 
-  logger.info('Network addresses retrieved successfully', { 
+  logger.info('Network addresses retrieved successfully', {
     network: NETWORK_NAME,
-    addresses
+    addresses,
   });
 
   return addresses;
-} 
+}

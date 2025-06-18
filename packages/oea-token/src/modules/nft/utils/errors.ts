@@ -2,7 +2,10 @@
  * Custom error for contract-related issues
  */
 export class ContractError extends Error {
-  constructor(message: string, public readonly cause?: unknown) {
+  constructor(
+    message: string,
+    public readonly cause?: unknown
+  ) {
     super(message);
     this.name = 'ContractError';
   }
@@ -46,4 +49,4 @@ export class ContractInitializationError extends ContractError {
     super(`Failed to initialize contract: ${message}`, cause);
     this.name = 'ContractInitializationError';
   }
-} 
+}

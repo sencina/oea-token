@@ -5,7 +5,7 @@ export enum LogLevel {
   DEBUG = 'DEBUG',
   INFO = 'INFO',
   WARN = 'WARN',
-  ERROR = 'ERROR'
+  ERROR = 'ERROR',
 }
 
 /**
@@ -81,18 +81,20 @@ export class Logger {
       timestamp: new Date().toISOString(),
       module: this.module,
       context: context ? serializeBigInt(context) : undefined,
-      error: error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        cause: serializeBigInt(error.cause)
-      } as Error : undefined
+      error: error
+        ? ({
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+            cause: serializeBigInt(error.cause),
+          } as Error)
+        : undefined,
     };
 
     // In production, you might want to send this to a logging service
     // For now, we'll format it nicely for console output
     const output = this.formatLog(logData);
-    
+
     switch (level) {
       case LogLevel.DEBUG:
         console.debug(output);
@@ -111,7 +113,7 @@ export class Logger {
 
   private formatLog(logData: LogData): string {
     const base = `[${logData.timestamp}] [${logData.level}] [${logData.module}] ${logData.message}`;
-    
+
     const parts = [base];
 
     if (logData.context) {
@@ -130,4 +132,4 @@ export class Logger {
 
     return parts.join(' ');
   }
-} 
+}
