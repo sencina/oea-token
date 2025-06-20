@@ -41,6 +41,12 @@ export class ConflictException extends HttpException {
   }
 }
 
+export class BadRequestException extends HttpException {
+  constructor(errorCode?: string) {
+    super(HttpStatus.BAD_REQUEST, 'Bad Request', { error_code: errorCode });
+  }
+}
+
 export function ErrorHandling(error: Error, req: Request, res: Response, next: NextFunction): Response {
   if (!error) next(error);
   if (error instanceof HttpException) {

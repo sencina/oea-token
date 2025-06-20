@@ -1,6 +1,15 @@
 version: '3.9'
 
 services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
   app:
     build:
       context: .
@@ -10,9 +19,16 @@ services:
     volumes:
       - .:/app
       - ../web3:/app/web3
-      - /app/node_modules # Avoid conflicts with local `
+      - /app/node_modules # Avoid conflicts with local node_modules
     env_file:
       - .env
     environment:
-      - NODE_ENV=development
-    command: npm start
+      - NODE_ENV=${NODE_ENV:-development}
+      - REDIS_URL=redis://redis:6379
+    command: ${DOCKER_COMMAND:-npm run dev}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  redis_data:

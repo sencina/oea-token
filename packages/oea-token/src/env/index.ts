@@ -13,3 +13,10 @@ export const NETWORK_NAME = process.env.NETWORK_NAME;
 export const NFT_ADDRESS = process.env.NFT_ADDRESS;
 export const NFT_ADMIN_ADDRESS = process.env.NFT_ADMIN_ADDRESS;
 export const NFT_IMPLEMENTATION_ADDRESS = process.env.NFT_IMPLEMENTATION_ADDRESS;
+
+// Wallet Addresses
+export const WALLET_ADDRESS = process.env.WALLET_ADDRESS;
+export const BALANCE_TRESHOLD = process.env.BALANCE_TRESHOLD;
+export const ALERT_EMAIL = process.env.ALERT_EMAIL;
+export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+export const REDIS_URL = process.env.REDIS_URL;
